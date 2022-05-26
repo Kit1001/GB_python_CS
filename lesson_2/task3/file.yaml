@@ -1,0 +1,11 @@
+items:
+- computer
+- printer
+- mouse
+- keyboard
+items_count: 4
+items_price:
+  computer: 400$
+  keyboard: 10$
+  mouse: 20$
+  printer: 150$
