@@ -1,12 +1,8 @@
-from socket import *
 import time
+from socket import *
 
 from common.utils import *
-# import argparse
-#
-# parser = argparse.ArgumentParser()
-# parser.add_argument('adress', metavar='A', type=str, help='ip address')
-# args = parser.parse_args()
+
 
 def response_constructor(payload=None, code=200, **kwargs):
     response = {
@@ -55,7 +51,7 @@ message_queue = []
 
 s = socket(AF_INET, SOCK_STREAM)
 s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-s.bind(('', 8888))
+s.bind(get_address())
 s.listen(5)
 while True:
     print(message_queue)

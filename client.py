@@ -33,7 +33,7 @@ def response_handler(response):
 
 
 s = socket(AF_INET, SOCK_STREAM)
-s.connect(('localhost', 8888))
+s.connect(get_address())
 
 username = input('Enter your username: ')
 msg = form_presence(username)
@@ -49,7 +49,7 @@ while True:
     command = command.split(' ')
     command_type = command[0].strip()
 
-    s = create_connection(('localhost', 8888))
+    s = create_connection(get_address())
 
     if command_type == 'presence':
         request = form_presence(username)
