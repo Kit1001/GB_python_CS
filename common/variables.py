@@ -1,0 +1,4 @@
+ENCODING = "UTF-8"
+
+DEFAULT_ADDRESS = 'localhost'
+DEFAULT_PORT = 8888
