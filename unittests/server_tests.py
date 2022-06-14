@@ -37,3 +37,7 @@ class TestResponseConstructor(unittest.TestCase):
 
     def test_response_empty(self):
         self.assertIs(server.response_constructor()['payload'], None)
+        
+if __name__ == '__main__':
+    unittest.main()
+    
