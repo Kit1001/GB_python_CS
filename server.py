@@ -1,7 +1,10 @@
+import logging
 import time
 from socket import *
 
 from GB_pyhton_CS.common.utils import *
+
+logger = logging.getLogger('server')
 
 
 def response_constructor(payload=None, code=200, **kwargs):
@@ -11,12 +14,14 @@ def response_constructor(payload=None, code=200, **kwargs):
         "payload": payload
     }
     response.update(kwargs)
-    print(response)
+    # print(response)
+    logger.debug(f'Constructed response {response}')
     return response
 
 
 def request_handler(request, mq):
     action = request['action']
+    logger.debug(f'request handler got request {request}')
 
     if action == 'presence':
         response = response_constructor("presence established", unread_messages=3)
@@ -55,7 +60,8 @@ if __name__ == '__main__':
     s.bind(get_address())
     s.listen(5)
     while True:
-        print(message_queue)
+        # print(message_queue)
+        logger.debug(f'current message queue: {message_queue}')
         client, addr = s.accept()
         try:
             request = client.recv(1024)
@@ -67,6 +73,9 @@ if __name__ == '__main__':
             response = wrap(response)
             client.send(response)
         except (BrokenPipeError, ConnectionResetError) as e:
-            print(e, 'occurred')
+            # print(e, 'occurred')
+            logger.error(f'Client disconnected: {e}')
+        except Exception as e:
+            logger.critical(f'Unknown server error: {e}')
         finally:
             client.close()
