@@ -1,7 +1,8 @@
 import logging
 
-import log.client_log_config
+import log.server_log_config
 
 
-log = logging.getLogger('client')
-log.critical('fubar')
+logger = logging.getLogger('server')
+# logger.handlers[1].doRollover()
+logger.critical("fuba212r")

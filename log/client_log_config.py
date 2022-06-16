@@ -14,7 +14,7 @@ log.addHandler(stream_handler)
 
 path = os.path.join(os.path.dirname(__file__), "logs")
 path = os.path.join(path, "client")
-path = os.path.join(path, "app.log")
+path = os.path.join(path, "client.log")
 file_handler = logging.FileHandler(path)
 file_handler.setFormatter(format_)
 file_handler.setLevel(logging.WARNING)
