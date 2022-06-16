@@ -1,8 +1,6 @@
 import logging
 import sys
 
-
-
 log = logging.getLogger('client')
 log.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stderr)

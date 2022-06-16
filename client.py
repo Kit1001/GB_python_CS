@@ -1,6 +1,9 @@
+import logging
 from socket import *
 
 from GB_pyhton_CS.common.utils import *
+
+logger = logging.getLogger('client')
 
 
 def presence_constructor(username='guest', status="Just connected"):
@@ -26,7 +29,8 @@ def message_constructor(to="guest", from_="guest", message="Hello world"):
 def response_handler(response):
     status = response['response']
     if status == 200:
-        print('success')
+        # print('success')
+        logger.debug('Handler received response 200')
         return response['payload']
     else:
         raise ValueError(f'unknown error: code {status}')
@@ -60,8 +64,9 @@ if __name__ == '__main__':
             request = json.dumps(request).encode()
             s.send(request)
             response = s.recv(1024)
-            response = json.loads(response)
-            print(response)
+            response = unwrap(response)
+            # print(response)
+            logger.debug(f'Server response: {response}')
 
         elif command_type == 'send':
             to = command[1]
@@ -71,6 +76,7 @@ if __name__ == '__main__':
             s.send(request)
             response = s.recv(1024)
             response = unwrap(response)
+            logger.debug(f'Server response: {response}')
             response_handler(response)
 
         elif command_type == 'read':
@@ -88,6 +94,7 @@ if __name__ == '__main__':
             if len(messages) > 0:
                 for msg in messages:
                     print(f'New message from {msg["from"]}:\n {msg["message"]}')
+                    logger.info(f'Got new message from {msg["from"]}')
 
         elif command_type == 'exit':
             s.close()
@@ -95,5 +102,6 @@ if __name__ == '__main__':
 
         else:
             print('unknown command')
+            logger.error(f'User passed an unknown command {command_type}')
 
         s.close()
