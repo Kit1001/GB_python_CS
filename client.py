@@ -2,10 +2,12 @@ import logging
 from socket import *
 
 from GB_pyhton_CS.common.utils import *
+from decos import log_this
 
 logger = logging.getLogger('client')
 
 
+@log_this
 def presence_constructor(username='guest', status="Just connected"):
     presence = {"action": "presence",
                 "type": "status",
@@ -16,6 +18,7 @@ def presence_constructor(username='guest', status="Just connected"):
     return presence
 
 
+@log_this
 def message_constructor(to="guest", from_="guest", message="Hello world"):
     message = {
         "action": "msg",
@@ -26,13 +29,15 @@ def message_constructor(to="guest", from_="guest", message="Hello world"):
     return message
 
 
+@log_this
 def response_handler(response):
     status = response['response']
     if status == 200:
         # print('success')
-        logger.debug('Handler received response 200')
+        # logger.debug('Handler received response 200')
         return response['payload']
     else:
+        logger.critical(f'unknown error: code {status}')
         raise ValueError(f'unknown error: code {status}')
 
 
@@ -76,7 +81,7 @@ if __name__ == '__main__':
             s.send(request)
             response = s.recv(1024)
             response = unwrap(response)
-            logger.debug(f'Server response: {response}')
+            # logger.debug(f'Server response: {response}')
             response_handler(response)
 
         elif command_type == 'read':
@@ -94,7 +99,7 @@ if __name__ == '__main__':
             if len(messages) > 0:
                 for msg in messages:
                     print(f'New message from {msg["from"]}:\n {msg["message"]}')
-                    logger.info(f'Got new message from {msg["from"]}')
+                    # logger.info(f'Got new message from {msg["from"]}')
 
         elif command_type == 'exit':
             s.close()

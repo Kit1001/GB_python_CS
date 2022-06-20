@@ -8,7 +8,7 @@ from GB_pyhton_CS.common.variables import ENCODING
 log = logging.getLogger('server')
 log.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stderr)
-format_ = logging.Formatter('%(levelname)-10s %(asctime)-30s %(module)-25s %(message)-20s')
+format_ = logging.Formatter('%(levelname)-10s %(asctime)-30s %(real_module)-25s %(message)-20s')
 handler.setFormatter(format_)
 handler.setLevel(logging.DEBUG)
 log.addHandler(handler)
