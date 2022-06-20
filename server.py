@@ -3,10 +3,12 @@ import time
 from socket import *
 
 from GB_pyhton_CS.common.utils import *
+from decos import log_this
 
 logger = logging.getLogger('server')
 
 
+@log_this
 def response_constructor(payload=None, code=200, **kwargs):
     response = {
         "response": code,
@@ -15,13 +17,14 @@ def response_constructor(payload=None, code=200, **kwargs):
     }
     response.update(kwargs)
     # print(response)
-    logger.debug(f'Constructed response {response}')
+    # logger.debug(f'Constructed response {response}')
     return response
 
 
+@log_this
 def request_handler(request, mq):
     action = request['action']
-    logger.debug(f'request handler got request {request}')
+    # logger.debug(f'request handler got request {request}')
 
     if action == 'presence':
         response = response_constructor("presence established", unread_messages=3)

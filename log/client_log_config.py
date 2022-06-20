@@ -7,7 +7,7 @@ log.setLevel(logging.DEBUG)
 
 
 stream_handler = logging.StreamHandler(sys.stderr)
-format_ = logging.Formatter('%(levelname)-10s %(asctime)-30s %(module)-25s %(message)-20s')
+format_ = logging.Formatter('%(levelname)-10s %(asctime)-30s %(real_module)-25s %(message)-20s')
 stream_handler.setFormatter(format_)
 stream_handler.setLevel(logging.DEBUG)
 log.addHandler(stream_handler)
