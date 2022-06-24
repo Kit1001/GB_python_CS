@@ -18,9 +18,6 @@ while True:
     else:
         all_clients.append(conn)
     finally:
-        # r = []
-        # w = []
-
         r, w, e = select.select(all_clients, all_clients, [], 0)
 
         for client in r:
@@ -33,14 +30,9 @@ while True:
                 print(e)
                 all_clients.remove(client)
 
-        # print(w)
         condition = len(message_queue) > 0
         for client in w:
-
             try:
-                # отправляем время клиенту
-                # print('trying to send message')
-                # if len(message_queue) > 0: print(message_queue)
                 if condition:
                     msg = message_queue[-1]
                     client.send(msg.encode('utf-8'))
