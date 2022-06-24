@@ -1,5 +1,5 @@
-from socket import *
+msg = [1, 2]
 
-sock = socket(AF_INET, SOCK_STREAM)
-sock.bind(('', 8888))
-sock.close()
+m = msg.pop()
+
+print(msg)
