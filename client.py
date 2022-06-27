@@ -1,26 +1,62 @@
 import atexit
 from socket import *
 from threading import Thread
+from time import sleep
+
+from common.utils import *
 
 
-def receiver(socket):
+def establish_presence(s: socket, user: str) -> bool:
+    presence = {"action": "presence",
+                "type": "status",
+                "user": {
+                    "account_name": user,
+                    "status": 'just connected'
+                }}
+    s.send(wrap(presence))
+    response = unwrap(s.recv(1024))
+    if response['response'] == 200:
+        print('Successfully connected, you can type messages to chat now')
+        return True
+    else:
+        print('Unknown error\n', response)
+        return False
+
+
+def receiver(s: socket):
     while True:
-        msg = socket.recv(1024).decode('UTF-8')
-        print(f'received: {msg}')
+        msg = unwrap(s.recv(1024))
+        message = msg['message']
+        sender = msg['from']
+        print(f'{sender}: {message}')
 
 
-def transmitter(socket):
+def transmitter(s: socket, user):
     while True:
         msg = input()
-        socket.send(msg.encode('UTF-8'))
+        message = {
+            "action": "msg",
+            "to": None,
+            "from": user,
+            "message": msg
+        }
+        s.send(wrap(message))
 
+
+username = input('Enter your nickname: ')
 
 sock = socket(AF_INET, SOCK_STREAM)
 atexit.register(lambda: sock.close())
-sock.connect(('', 8889))
+sock.connect((DEFAULT_ADDRESS, DEFAULT_PORT))
 
-t = Thread(target=receiver, args=(sock,))
-i = Thread(target=transmitter, args=(sock,))
-t.daemon = False
-t.start()
-i.start()
+connection = establish_presence(sock, username)
+
+if connection:
+    t = Thread(target=receiver, args=(sock,))
+    i = Thread(target=transmitter, args=(sock, username, ))
+    t.daemon, i.daemon = True, True
+    t.start()
+    i.start()
+
+while True:
+    sleep(1)

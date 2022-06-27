@@ -1,16 +1,34 @@
 import select
+import time
 from socket import *
 import atexit
 
+from GB_python_CS.common.utils import *
+from GB_python_CS.common.variables import *
+
+
+def request_handler(mq: list, request, client_socket):
+    if request['action'] == 'presence':
+        response = {
+            "response": 200,
+            "time": time.time(),
+            "payload": 'success'
+        }
+        client_socket.send(wrap(response))
+    elif request['action'] == 'msg':
+        mq.append(request)
+
+
 sock = socket(AF_INET, SOCK_STREAM)
 atexit.register(lambda: sock.close())
-sock.bind(('', 8889))
-sock.listen(5)
-sock.settimeout(1)
+sock.bind((DEFAULT_ADDRESS, DEFAULT_PORT))
+sock.listen(10)
+sock.settimeout(0.5)
 all_clients = []
 message_queue = []
 
 while True:
+    print(message_queue)
     try:
         conn, addr = sock.accept()
     except timeout as e:
@@ -22,10 +40,11 @@ while True:
 
         for client in r:
             try:
-                msg = client.recv(1024).decode('UTF-8')
+                msg = unwrap(client.recv(1024))
                 if msg == '':
                     all_clients.remove(client)
-                message_queue.append(msg)
+
+                request_handler(message_queue, msg, client)
             except Exception as e:
                 print(e)
                 all_clients.remove(client)
@@ -35,7 +54,7 @@ while True:
             try:
                 if condition:
                     msg = message_queue[-1]
-                    client.send(msg.encode('utf-8'))
+                    client.send(wrap(msg))
                     print('message sent')
             except Exception:
                 all_clients.remove(client)
